@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,42 +8,257 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         /* Animasi transisi tab */
-        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Utilitas Tampilan */
-        .hidden-app { display: none !important; }
-        
+        .hidden-app {
+            display: none !important;
+        }
+
         /* Styling Scrollbar halus */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { bg-gray-100; }
-        ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded; }
-        ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            bg-gray-100;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            @apply bg-gray-300 rounded;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            @apply bg-gray-400;
+        }
+
+        /* Spotlight Search Styles */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            font-size: 18px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(34, 197, 94, 0.3);
+            transform: scale(1.01);
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-results.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.1), transparent);
+        }
+
+        .search-result-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .search-result-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .search-result-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-meta {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .search-result-price {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            font-family: monospace;
+            text-align: right;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .search-result-category {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e2e8f0;
+            color: #475569;
+            margin-left: 8px;
+        }
+
+        .search-no-results {
+            padding: 30px 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .search-no-results svg {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            opacity: 0.5;
+        }
+
+        .search-shortcut {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 4px;
+        }
+
+        .search-shortcut kbd {
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+            font-family: inherit;
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
+            border-radius: 2px;
+            padding: 0 2px;
+        }
     </style>
 </head>
+
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
 
     <!-- LOGIN PAGE (Halaman Pembuka) -->
     <div id="loginPage" class="fixed inset-0 bg-slate-800 z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
             <div class="p-8 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div
+                    class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
                 </div>
                 <!-- PERUBAHAN DI SINI: Judul jadi Daftar Harga, Nama PT dihapus -->
                 <h2 class="text-2xl font-bold text-slate-800 mb-6">Daftar Harga</h2>
-                
+
                 <form onsubmit="checkPassword(event)" class="space-y-4">
                     <div>
-                        <input type="password" id="passwordInput" placeholder="Masukkan Kode Akses" 
+                        <input type="password" id="passwordInput" placeholder="Masukkan Kode Akses"
                             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition text-center text-lg tracking-widest"
                             required>
                     </div>
-                    <button type="submit" 
+                    <button type="submit"
                         class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition transform active:scale-95 shadow-lg">
                         Buka Dokumen
                     </button>
@@ -57,29 +273,62 @@
 
     <!-- MAIN APPLICATION (Awalnya Disembunyikan) -->
     <div id="mainApp" class="hidden-app flex flex-col min-h-screen">
-        
+
         <!-- HEADER -->
         <header class="bg-slate-800 text-white shadow-lg sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <!-- PERUBAHAN DI SINI: Judul jadi Daftar Harga, Subtitle PT dihapus -->
                     <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <svg class="w-6 h-6 md:w-8 md:h-8 text-green-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
                         Daftar Harga
                     </h1>
                     <p class="text-xs text-slate-400 mt-1">Updated 2025</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="logout()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg shadow transition text-sm font-semibold">
+                    <button onclick="logout()"
+                        class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg shadow transition text-sm font-semibold">
                         Keluar
                     </button>
-                    <button onclick="downloadCurrentCSV()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm font-semibold">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <button onclick="downloadCurrentCSV()"
+                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm font-semibold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
                         CSV
                     </button>
                 </div>
             </div>
         </header>
+
+        <!-- SPOTLIGHT SEARCH SECTION -->
+        <div class="bg-gradient-to-b from-slate-700 to-slate-600 py-8 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-4">
+                    <p class="text-slate-300 text-sm">Cari material atau produk dengan cepat</p>
+                </div>
+                <div class="search-container">
+                    <svg class="search-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="spotlightSearch" class="search-input"
+                        placeholder="Ketik untuk mencari... (contoh: non woven, pipa, geocell)" autocomplete="off">
+                    <div class="search-shortcut hidden md:flex">
+                        <kbd>⌘</kbd><kbd>K</kbd>
+                    </div>
+                    <div id="searchResults" class="search-results">
+                        <!-- Results will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- NAVIGATION TABS -->
         <div class="bg-white border-b shadow-sm overflow-x-auto sticky top-[80px] z-40">
@@ -111,7 +360,7 @@
             e.preventDefault();
             const input = document.getElementById('passwordInput').value;
             const errorMsg = document.getElementById('errorMsg');
-            
+
             if (input === CORRECT_PASS) {
                 document.getElementById('loginPage').classList.add('hidden-app');
                 document.getElementById('mainApp').classList.remove('hidden-app');
@@ -291,7 +540,7 @@
         function renderContent(key) {
             const data = db[key];
             const container = document.getElementById('contentContainer');
-            
+
             // Generate Main Table Rows
             const tableRows = data.rows.map((row, idx) => `
                 <tr class="hover:bg-slate-50 border-b last:border-0 transition">
@@ -312,7 +561,7 @@
                         ${row.map(cell => `<td class="p-3 text-sm text-slate-700 border-r last:border-0">${cell}</td>`).join('')}
                     </tr>
                 `).join('');
-                
+
                 subTableHtml = `
                     <div class="mt-6 border rounded-lg overflow-hidden bg-slate-50">
                         <div class="bg-slate-200 px-4 py-2 text-xs font-bold text-slate-700 uppercase tracking-wide">
@@ -377,7 +626,7 @@
         function downloadCurrentCSV() {
             const data = db[currentKey];
             let csvContent = "data:text/csv;charset=utf-8,";
-            
+
             // Header Info
             csvContent += `"${data.title} (${data.meta.date})"\n`;
             csvContent += `"${data.meta.tax}"\n\n`;
@@ -419,6 +668,231 @@
 
         // Initialize
         init();
+
+        // --- SPOTLIGHT SEARCH LOGIC ---
+        const searchInput = document.getElementById('spotlightSearch');
+        const searchResults = document.getElementById('searchResults');
+        let selectedIndex = -1;
+
+        // Search function - searches across all categories
+        function searchDatabase(query) {
+            if (!query || query.length < 2) return [];
+
+            const results = [];
+            const lowerQuery = query.toLowerCase();
+
+            Object.keys(db).forEach(key => {
+                const category = db[key];
+
+                // Search in main rows
+                category.rows.forEach((row, rowIndex) => {
+                    const rowText = row.map(cell => String(cell).toLowerCase()).join(' ');
+                    if (rowText.includes(lowerQuery) || category.label.toLowerCase().includes(lowerQuery)) {
+                        // Find price in row (number values)
+                        let price = null;
+                        let priceLabel = '';
+                        for (let i = 1; i < row.length; i++) {
+                            if (typeof row[i] === 'number') {
+                                price = row[i];
+                                priceLabel = category.headers[i] || '';
+                                break;
+                            }
+                        }
+
+                        results.push({
+                            categoryKey: key,
+                            categoryLabel: category.label,
+                            title: row[0],
+                            rowIndex: rowIndex,
+                            price: price,
+                            priceLabel: priceLabel,
+                            details: row.slice(1).map((cell, i) => ({
+                                label: category.headers[i + 1] || '',
+                                value: cell
+                            })),
+                            source: 'main'
+                        });
+                    }
+                });
+
+                // Search in subTable if exists
+                if (category.subTable) {
+                    category.subTable.rows.forEach((row, rowIndex) => {
+                        const rowText = row.map(cell => String(cell).toLowerCase()).join(' ');
+                        if (rowText.includes(lowerQuery)) {
+                            results.push({
+                                categoryKey: key,
+                                categoryLabel: category.label,
+                                title: row[0],
+                                rowIndex: rowIndex,
+                                price: null,
+                                details: row.slice(1).map((cell, i) => ({
+                                    label: category.subTable.headers[i + 1] || '',
+                                    value: cell
+                                })),
+                                source: 'subTable'
+                            });
+                        }
+                    });
+                }
+            });
+
+            return results.slice(0, 10); // Limit to 10 results
+        }
+
+        // Highlight matching text
+        function highlightMatch(text, query) {
+            if (!query || query.length < 2) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return String(text).replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Render search results
+        function renderSearchResults(results, query) {
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="search-no-results">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p>Tidak ada hasil untuk "<strong>${query}</strong>"</p>
+                        <p class="text-sm mt-1">Coba kata kunci lain seperti "woven", "pipa", atau "geocell"</p>
+                    </div>
+                `;
+                searchResults.classList.add('active');
+                return;
+            }
+
+            searchResults.innerHTML = results.map((item, index) => `
+                <div class="search-result-item ${index === selectedIndex ? 'bg-slate-100' : ''}" 
+                     data-index="${index}" 
+                     data-category="${item.categoryKey}"
+                     onclick="navigateToResult('${item.categoryKey}', ${item.rowIndex})">
+                    <div class="search-result-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="search-result-content">
+                        <div class="search-result-title">
+                            ${highlightMatch(item.title, query)}
+                            <span class="search-result-category">${item.categoryLabel}</span>
+                        </div>
+                        <div class="search-result-meta">
+                            ${item.details.slice(0, 2).map(d => `${d.label}: ${typeof d.value === 'number' ? formatRupiah(d.value) : d.value}`).join(' • ')}
+                        </div>
+                    </div>
+                    ${item.price ? `<div class="search-result-price">${formatRupiah(item.price)}</div>` : ''}
+                </div>
+            `).join('');
+
+            searchResults.classList.add('active');
+        }
+
+        // Navigate to result when clicked
+        function navigateToResult(categoryKey, rowIndex) {
+            // Switch to the category tab
+            switchTab(categoryKey);
+
+            // Clear search
+            searchInput.value = '';
+            searchResults.classList.remove('active');
+
+            // Optional: Scroll to the specific row (could add highlight animation later)
+            setTimeout(() => {
+                const rows = document.querySelectorAll('#contentContainer tbody tr');
+                if (rows[rowIndex]) {
+                    rows[rowIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    rows[rowIndex].style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.2), transparent)';
+                    setTimeout(() => {
+                        rows[rowIndex].style.background = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+
+        // Debounce function for better performance
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', debounce((e) => {
+            const query = e.target.value.trim();
+            selectedIndex = -1;
+
+            if (query.length < 2) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const results = searchDatabase(query);
+            renderSearchResults(results, query);
+        }, 150));
+
+        // Keyboard navigation
+        searchInput.addEventListener('keydown', (e) => {
+            const items = searchResults.querySelectorAll('.search-result-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelectedItem(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, 0);
+                updateSelectedItem(items);
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                items[selectedIndex]?.click();
+            } else if (e.key === 'Escape') {
+                searchResults.classList.remove('active');
+                searchInput.blur();
+            }
+        });
+
+        function updateSelectedItem(items) {
+            items.forEach((item, i) => {
+                if (i === selectedIndex) {
+                    item.classList.add('bg-slate-100');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('bg-slate-100');
+                }
+            });
+        }
+
+        // Close results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Focus search on Cmd+K or Ctrl+K
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        // Show results again when focusing with existing query
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length >= 2) {
+                const results = searchDatabase(searchInput.value.trim());
+                renderSearchResults(results, searchInput.value.trim());
+            }
+        });
     </script>
 </body>
+
 </html>
